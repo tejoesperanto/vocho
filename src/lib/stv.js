@@ -1,5 +1,12 @@
 const util = require('./util');
 
+/**
+ * Runs a Single Transferable Vote election
+ * @param {number}          places       The number of electable candidates (seats)
+ * @param {string[]|string} candidates   The candidates. Each candidate must be represented by one character
+ * @param {string[]}        ballots      All ballots
+ * @param {string}          [tieBreaker] A tie breaker listing all candidates
+ */
 function STV (places, candidates, ballots, tieBreaker) {
 	if (typeof candidates === 'string') { candidates = candidates.split(''); }
 	places = Math.min(places, candidates.length); // We can't elect a ghost

@@ -4,11 +4,19 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tejoesperanto/vocho.git"
   },
   "author": "Mia Nordentoft",
   "license": "MIT",
   "devDependencies": {
     "eslint": "^5.16.0"
+  },
+  "dependencies": {
+    "blessed": "^0.1.81"
   }
 }

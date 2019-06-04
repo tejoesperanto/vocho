@@ -30,6 +30,14 @@ function isCyclic (graph) {
 	return false;
 }
 
+/**
+ * Runs a tideman ranked pairs election
+ * @param {string[]|string} candidates    The candidates. Each candidate must be represented by one character
+ * @param {string[]} ballots              All ballots written using tideman ranked pairs syntax
+ * @param {string[]}  [ignoredCandidates] An array of candidates to ignore
+ * @param {string} tieBreaker             The fully inclusive tie breaker ballot without any equals
+ * @return {string} The winning candidate
+ */
 function RankedPairs (candidates, ballots, ignoredCandidates = [], tieBreaker) {
 	if (typeof candidates === 'string') { candidates = candidates.split(''); }
 	candidates.sort();

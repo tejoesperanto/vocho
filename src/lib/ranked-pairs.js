@@ -44,7 +44,6 @@ function RankedPairs (candidates, ballots, ignoredCandidates = [], tieBreaker) {
 
 	let tieBreakerArr = [];
 	if (tieBreaker) {
-		ballots.push(tieBreaker);
 		tieBreakerArr = tieBreaker.split('>');
 
 		if (new Set(tieBreakerArr).size !== tieBreakerArr.length) {

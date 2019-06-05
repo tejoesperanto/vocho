@@ -100,6 +100,34 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 		top: 6,
 		width: '50%',
 		height: 1,
+		content: '{bold}Kvanto de venkontoj:{/bold} (nur por UTV)',
+		tags: true
+	});
+
+	const placesInput = new Editor({
+		parent: mainBox,
+		left: '50%',
+		top: 7,
+		height: 3,
+		width: '50%',
+		border: 'line',
+		multiLine: false
+	});
+	placesInput.on('focus', () => {
+		// Makes the cursor visible immediately
+		mainBox.screen.render();
+	});
+	placesInput.on('blur', () => {
+		mainBox.screen.program.hideCursor();
+		mainBox.screen.render();
+	});
+
+	blessed.text({
+		parent: mainBox,
+		left: '50%+1',
+		top: 10,
+		width: '50%',
+		height: 1,
 		content: '{bold}Rezulto(j):{/bold}',
 		tags: true
 	});
@@ -107,8 +135,8 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 	const resultsBox = blessed.box({
 		parent: mainBox,
 		left: '50%',
-		top: 7,
-		height: '100%-8',
+		top: 11,
+		height: '100%-12',
 		width: '50%',
 		border: 'line',
 		scrollable: true,
@@ -197,20 +225,27 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 		const candidates = candidatesInput.textBuf.getText();
 		const ballots = ballotsInput.textBuf.getText();
 		const ignoredCandidates = ignoredCandidatesInput.textBuf.getText();
+		const places = placesInput.textBuf.getText();
 
 		try {
-			const results = performElection(currentElectionType, candidates, ballots, ignoredCandidates);
+			const results = performElection(currentElectionType, candidates, ballots, ignoredCandidates, places);
 			resultsBox.setContent(results);
 			mainBox.screen.render();
 		} catch (e) {
 			if (e.type === 'TIE_BREAKER_NEEDED') {
 				prompt.setLabel('Necesas egalecrompanto!');
-				const promptText = 'La egalecrompanto mem enskribu sian balotilon tie ĉi:';
+				let promptText = 'La egalecrompanto mem enskribu sian balotilon ĉi-sube.\nEkz. ';
+				if (currentElectionType === 'RP') {
+					promptText += 'A=B>C>D=E';
+				} else if (currentElectionType === 'STV') {
+					promptText += 'ABCDEF';
+				}
+
 				prompt.input(promptText, '', (err, tieBreaker) => {
 					if (err) { throw err; }
 					if (!tieBreaker) { return mainBox.screen.render(); }
 					
-					const results = performElection(currentElectionType, candidates, ballots, ignoredCandidates, tieBreaker);
+					const results = performElection(currentElectionType, candidates, ballots, ignoredCandidates, places, tieBreaker);
 					resultsBox.setContent(results);
 					mainBox.screen.render();
 				});
@@ -240,6 +275,7 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 		candidatesInput.textBuf.setText('');
 		ballotsInput.textBuf.setText('');
 		ignoredCandidatesInput.textBuf.setText('');
+		placesInput.textBuf.setText('');
 		resultsBox.setContent(defaultResultsValue);
 		mainBox.screen.render();
 	});

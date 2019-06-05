@@ -55,7 +55,7 @@ const introBox = blessed.box({
 	content:
 `Bonvenon al TEJO Voĉo, la eksterreta voĉdonsistemo de TEJO.
 Por helpo pri kiel uzi la programon, premu F1.
-Por eliri la programon, premu ESC aŭ ^C.`
+Por eliri la programon, premu ESC.`
 });
 
 const mainBox = blessed.box({
@@ -91,7 +91,7 @@ fullPrompt._.cancel.left++;
 
 setUpMainBox(mainBox, fullPrompt);
 
-screen.key(['escape', 'C-c'], () => {
+screen.key('escape', () => {
 	yesNoQuestion.ask('Ĉu vi certas, ke vi volas eliri Voĉon?', (err, val) => {
 		if (val) { process.exit(0);	}
 		screen.render();

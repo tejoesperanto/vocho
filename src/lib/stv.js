@@ -6,6 +6,7 @@ const util = require('./util');
  * @param {string[]|string} candidates   The candidates. Each candidate must be represented by one character
  * @param {string[]}        ballots      All ballots
  * @param {string}          [tieBreaker] A tie breaker listing all candidates
+ * @returns {Object}
  */
 function STV (places, candidates, ballots, tieBreaker) {
 	if (typeof candidates === 'string') { candidates = candidates.split(''); }
@@ -72,6 +73,8 @@ function STV (places, candidates, ballots, tieBreaker) {
 	if (blankBallots >= ballots.length / 2) {
 		const err = new Error('Too many blank ballots');
 		err.type = 'BLANK_BALLOTS';
+		err.numBallots = ballots.length;
+		err.blankBallots = blankBallots;
 		throw err;
 	}
 
@@ -266,7 +269,11 @@ function STV (places, candidates, ballots, tieBreaker) {
 	util.debug('Remaining ballots:');
 	util.debug(weightedBallots);
 
-	return electedCandidates;
+	return {
+		ballots: ballots.length,
+		blankBallots: blankBallots,
+		winners: electedCandidates
+	};
 }
 
 module.exports = STV;

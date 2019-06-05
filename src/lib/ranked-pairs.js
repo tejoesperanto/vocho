@@ -148,6 +148,8 @@ function RankedPairs (candidates, ballots, ignoredCandidates = [], tieBreaker) {
 	if (blankBallots >= ballots.length / 2) {
 		const err = new Error('Too many blank ballots');
 		err.type = 'BLANK_BALLOTS';
+		err.blankBallots = blankBallots;
+		err.numBallots = ballots.length;
 		throw err;
 	}
 
@@ -380,7 +382,11 @@ function RankedPairs (candidates, ballots, ignoredCandidates = [], tieBreaker) {
 
 	util.debug(`\nWinner: ${winner}`);
 
-	return winner;
+	return {
+		ballots: ballots.length,
+		blankBallots: blankBallots,
+		winner: winner
+	};
 }
 
 module.exports = RankedPairs;

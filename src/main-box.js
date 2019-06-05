@@ -1,13 +1,119 @@
 const blessed = require('blessed');
+const Editor = require('editor-widget');
 
+const performElection = require('./calc');
+
+const defaultResultsValue = 'Atendas enigon ...';
 let currentElectionType = null;
 
-module.exports = function setUpMainBox(mainBox) {
+module.exports = function setUpMainBox (mainBox, prompt) {
 	const electionTypes = {
 		RP: 'Paroranga metodo',
 		STV: 'Unuopa Transdonebla Voĉo'
 	};
 	const maxElectionTypeWidth = Math.max(...Object.values(electionTypes).map(x => x.length)) + 5;
+
+	blessed.text({
+		parent: mainBox,
+		left: 1,
+		top: 2,
+		width: '50%',
+		height: 1,
+		content: '{bold}Voĉdonebloj:{/bold} (unulitera, dividu per komo)',
+		tags: true
+	});
+
+	const candidatesInput = new Editor({
+		parent: mainBox,
+		top: 3,
+		height: 3,
+		width: '50%',
+		border: 'line',
+		multiLine: false
+	});
+	candidatesInput.on('focus', () => {
+		// Makes the cursor visible immediately
+		mainBox.screen.render();
+	});
+	candidatesInput.on('blur', () => {
+		mainBox.screen.program.hideCursor();
+		mainBox.screen.render();
+	});
+
+	blessed.text({
+		parent: mainBox,
+		left: 1,
+		top: 6,
+		width: '50%',
+		height: 1,
+		content: '{bold}Balotiloj:{/bold}',
+		tags: true
+	});
+
+	const ballotsInput = new Editor({
+		parent: mainBox,
+		top: 7,
+		height: '100%-8',
+		width: '50%',
+		border: 'line'
+	});
+	ballotsInput.on('focus', () => {
+		// Makes the cursor visible immediately
+		mainBox.screen.render();
+	});
+	ballotsInput.on('blur', () => {
+		mainBox.screen.program.hideCursor();
+		mainBox.screen.render();
+	});
+
+	blessed.text({
+		parent: mainBox,
+		left: '50%+1',
+		top: 2,
+		width: '50%',
+		height: 1,
+		content: '{bold}Ignoritaj kandidatoj:{/bold} (unulitera, dividu per komo)',
+		tags: true
+	});
+
+	const ignoredCandidatesInput = new Editor({
+		parent: mainBox,
+		left: '50%',
+		top: 3,
+		height: 3,
+		width: '50%',
+		border: 'line',
+		multiLine: false
+	});
+	ignoredCandidatesInput.on('focus', () => {
+		// Makes the cursor visible immediately
+		mainBox.screen.render();
+	});
+	ignoredCandidatesInput.on('blur', () => {
+		mainBox.screen.program.hideCursor();
+		mainBox.screen.render();
+	});
+
+	blessed.text({
+		parent: mainBox,
+		left: '50%+1',
+		top: 6,
+		width: '50%',
+		height: 1,
+		content: '{bold}Rezulto(j):{/bold}',
+		tags: true
+	});
+
+	const resultsBox = blessed.box({
+		parent: mainBox,
+		left: '50%',
+		top: 7,
+		height: '100%-8',
+		width: '50%',
+		border: 'line',
+		scrollable: true,
+		content: defaultResultsValue
+	});
 
 	const typePickerBtn = blessed.button({
 		parent: mainBox,
@@ -18,9 +124,10 @@ module.exports = function setUpMainBox(mainBox) {
 			hover: {
 				bg: 'white',
 				fg: 'black'
-			},
+			}
 		},
-		mouse: true
+		mouse: true,
+		hoverText: 'Alklaki por ŝanĝi voĉdonsistemon'
 	});
 
 	const changeElectionType = type => {
@@ -36,7 +143,7 @@ module.exports = function setUpMainBox(mainBox) {
 			typePickerBtn.style.fg = 'black';
 		} else {
 			typePickerBtn.style.bg = 'gray';
-			typePickerBtn.style.fg = 'white';
+			typePickerBtn.style.fg = 'default';
 		}
 		typePickerDropdownItems.forEach(x => x.toggle());
 		mainBox.screen.render();
@@ -69,4 +176,71 @@ module.exports = function setUpMainBox(mainBox) {
 	});
 
 	typePickerBtn.on('click', toggleTypePickerDropdown);
+
+	const runElectionBtn = blessed.button({
+		parent: mainBox,
+		left: maxElectionTypeWidth + 1,
+		width: 9,
+		height: 1,
+		style: {
+			bg: 'gray',
+			hover: {
+				bg: 'white',
+				fg: 'black'
+			}
+		},
+		mouse: true,
+		content: ' Kalkuli', // Intentional space
+		hoverText: 'Kalkulas la rezulton de la voĉdono'
+	});
+	runElectionBtn.on('click', () => {
+		const candidates = candidatesInput.textBuf.getText();
+		const ballots = ballotsInput.textBuf.getText();
+		const ignoredCandidates = ignoredCandidatesInput.textBuf.getText();
+
+		try {
+			const results = performElection(currentElectionType, candidates, ballots, ignoredCandidates);
+			resultsBox.setContent(results);
+			mainBox.screen.render();
+		} catch (e) {
+			if (e.type === 'TIE_BREAKER_NEEDED') {
+				prompt.setLabel('Necesas egalecrompanto!');
+				const promptText = 'La egalecrompanto mem enskribu sian balotilon tie ĉi:';
+				prompt.input(promptText, '', (err, tieBreaker) => {
+					if (err) { throw err; }
+					if (!tieBreaker) { return mainBox.screen.render(); }
+					
+					const results = performElection(currentElectionType, candidates, ballots, ignoredCandidates, tieBreaker);
+					resultsBox.setContent(results);
+					mainBox.screen.render();
+				});
+			} else {
+				throw e;
+			}
+		}
+	});
+
+	const resetFormBtn = blessed.button({
+		parent: mainBox,
+		left: maxElectionTypeWidth + 11,
+		width: 8,
+		height: 1,
+		style: {
+			bg: 'gray',
+			hover: {
+				bg: 'white',
+				fg: 'black'
+			},
+		},
+		mouse: true,
+		content: ' Nuligi', // Intentional space
+		hoverText: 'Ŝanĝas la valorojn de ĉiuj kampoj al siaj defaŭltoj'
+	});
+	resetFormBtn.on('click', () => {
+		candidatesInput.textBuf.setText('');
+		ballotsInput.textBuf.setText('');
+		ignoredCandidatesInput.textBuf.setText('');
+		resultsBox.setContent(defaultResultsValue);
+		mainBox.screen.render();
+	});
 };

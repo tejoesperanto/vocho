@@ -12,6 +12,11 @@ const screen = blessed.screen({
 	autoPadding: true
 });
 
+process.on('uncaughtException', err => {
+	screen.destroy();
+	throw err;
+});
+
 const resizeHandler = () => {
 	if (screen.width < 120) {
 		titleBox.width = 70;
@@ -59,7 +64,6 @@ const mainBox = blessed.box({
 	left: 0,
 	padding: 1
 });
-setUpMainBox(mainBox);
 
 const yesNoQuestion = blessed.question({
 	parent: screen,
@@ -71,6 +75,21 @@ const yesNoQuestion = blessed.question({
 });
 yesNoQuestion._.okay.content = 'Jes';
 yesNoQuestion._.cancel.content = ' Ne'; // intentional space
+
+const fullPrompt = blessed.prompt({
+	parent: screen,
+	border: 'line',
+	height: 'shrink',
+	width: 'half',
+	top: 'center',
+	left: 'center'
+});
+fullPrompt._.okay.content = ' Enmeti'; // intentional space
+fullPrompt._.okay.width = 8;
+fullPrompt._.cancel.content = ' Nuligi'; // intentional space
+fullPrompt._.cancel.left++;
+
+setUpMainBox(mainBox, fullPrompt);
 
 screen.key(['escape', 'C-c'], () => {
 	yesNoQuestion.ask('Ĉu vi certas, ke vi volas eliri Voĉon?', (err, val) => {

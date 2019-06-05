@@ -17,6 +17,7 @@
     "eslint": "^5.16.0"
   },
   "dependencies": {
-    "blessed": "^0.1.81"
+    "blessed": "git+https://github.com/CreativeCactus/blessed.git",
+    "editor-widget": "^1.1.1"
   }
 }

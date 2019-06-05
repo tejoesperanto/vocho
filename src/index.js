@@ -21,7 +21,7 @@ const resizeHandler = () => {
 	if (screen.width < 120) {
 		titleBox.width = 70;
 
-		introBox.top = 11;
+		introBox.top = 12;
 		introBox.left = 2;
 		introBox.width = '100%';
 
@@ -44,8 +44,9 @@ const titleBox = blessed.box({
 	parent: screen,
 	top: 0,
 	left: 2,
-	height: 10,
+	height: 11,
 	content: banner + '\n\n' +
+	' '.repeat(5) + 'Versio ' + require('../package.json').version + '\n' +
 	' '.repeat(5) + '© Mia Nordentoft 2019, MIT-permesilo'
 });
 

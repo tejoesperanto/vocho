@@ -1,0 +1,36 @@
+{underline}Premu F12 por fermi tiun ĉi fenestron{/underline}
+
+{bold}Por okazigi voĉdonadon:{/bold}
+=======================
+
+1. Elektu voĉdonsistemon;
+
+2. Enskribu la identigilojn de la kandidatoj:
+   Ĉiu kandidato estas reprezentita de unu simbolo. Por la kandidatoj Paul,
+   Lisa, kaj Eva oni povus skribi “P, L, E”, sed tiu ĉi sistemo ne funkcias
+   por kandidatoj kun la sama komenclitero. Por eviti konfuzon estas
+   rekomendita uzi la literojn A ĝis Z. Ankaŭ eblas uzi numerojn sed tio povas
+   psikologie influi la voĉdonanton.
+   Plej rekomendinde estas ke la voĉdonantoj uzu la plenajn nomojn de la
+   kandidatoj kaj nur en la sistemo estu uzata la unulitera kodo;
+
+3. Aldonu la balotilojn:
+   Por la Paroranga Sistemo (PR) la balotiloj estu enskribitaj jene:
+   A>B=C>D (a pli bonas ol B, kiu egalas al C, kiuj pli bonas ol D)
+
+4. Elektu kvanton de venkontoj, se vi uzas Unuopan Transdoneblan Voĉon (UVP)
+   kiel voĉdonsistemon;
+
+5. Premu ‘Kalkuli’;
+
+6. La rezultoj aperos en la dekstra, suba skatolo;
+
+7. Se necesas egalecrompanto, la programo malfermos fenestron, en kiu la
+   egalecrompanto {bold}mem{/bold} enskribu sian balotilon.
+
+8. Se per la Paroranga Sistemo (PR) estas dezirata elekti pli ol unu kandidaton
+   oni enskribu la nomon de la venkinto en la kampo “Ignorataj kandidatoj”, kaj
+   denove premi ‘Kalkuli’. La sistemo nun reuzos la balotilojn kaj agordojn sen
+   la jama venkinto kaj trovas la duan preferon.
+
+9. Premu ‘Nuligi’ por fari novan voĉdonadon.

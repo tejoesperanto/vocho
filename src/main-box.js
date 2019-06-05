@@ -72,7 +72,7 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 		top: 2,
 		width: '50%',
 		height: 1,
-		content: '{bold}Ignoritaj kandidatoj:{/bold} (unulitera, dividu per komo)',
+		content: '{bold}Ignorataj kandidatoj:{/bold} (unulitera, dividu per komo)',
 		tags: true
 	});
 

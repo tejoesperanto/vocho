@@ -54,7 +54,7 @@ const introBox = blessed.box({
 	height: 10,
 	content:
 `Bonvenon al TEJO Voĉo, la eksterreta voĉdonsistemo de TEJO.
-Por helpo pri kiel uzi la programon, premu F1.
+Por helpo pri kiel uzi la programon, premu F12.
 Por eliri la programon, premu ESC.`
 });
 
@@ -92,6 +92,16 @@ fullPrompt._.cancel.left++;
 fullPrompt._.cancel.top++;
 fullPrompt._.input.top++;
 
+const helpScreen = blessed.box({
+	parent: screen,
+	border: 'line',
+	label: 'Helpo',
+	content: fs.readFileSync(path.join(__dirname, '../help.txt'), 'utf8'),
+	padding: 1,
+	tags: true,
+	hidden: true
+});
+
 setUpMainBox(mainBox, fullPrompt);
 
 screen.key('escape', () => {
@@ -101,6 +111,10 @@ screen.key('escape', () => {
 	});
 });
 screen.key('C-x', () => process.exit(0));
+screen.key('f12', () => {
+	helpScreen.toggle();
+	screen.render();
+});
 
 resizeHandler();
 screen.on('resize', resizeHandler);

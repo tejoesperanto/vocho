@@ -30,7 +30,7 @@ cat >run.sh <<EOL
 cd \`dirname \$0\`
 cd vocho
 if [ ! -d node_modules ]; then
-	../node/bin/npm i
+	../node/bin/node ../node/bin/npm i
 fi
 ../node/bin/node src/index.js
 EOL
@@ -51,7 +51,7 @@ cat >run.sh <<EOL
 cd \`dirname \$0\`
 cd vocho
 if [ ! -d node_modules ]; then
-	../node/bin/npm i
+	../node/bin/node ../node/bin/npm i
 fi
 ../node/bin/node src/index.js
 EOL

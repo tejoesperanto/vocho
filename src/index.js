@@ -79,15 +79,18 @@ yesNoQuestion._.cancel.content = ' Ne'; // intentional space
 const fullPrompt = blessed.prompt({
 	parent: screen,
 	border: 'line',
-	height: 'shrink',
-	width: 'half',
+	height: '100%',
+	width: '100%',
 	top: 'center',
 	left: 'center'
 });
 fullPrompt._.okay.content = ' Enmeti'; // intentional space
 fullPrompt._.okay.width = 8;
+fullPrompt._.okay.top++;
 fullPrompt._.cancel.content = ' Nuligi'; // intentional space
 fullPrompt._.cancel.left++;
+fullPrompt._.cancel.top++;
+fullPrompt._.input.top++;
 
 setUpMainBox(mainBox, fullPrompt);
 

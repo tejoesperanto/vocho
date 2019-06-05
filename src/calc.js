@@ -5,9 +5,11 @@ const commaSeparatedRegex = /[^\s,]/g;
 module.exports = function performElection (electionType, candidatesStr, ballotsStr, ignoredCandidatesStr, places, tieBreaker) {
 	const candidates = candidatesStr.match(commaSeparatedRegex) || [];
 	const ignoredCandidates = ignoredCandidatesStr.match(commaSeparatedRegex) || [];
-	places = parseInt(places, 10);
-	if (!Number.isSafeInteger(places)) {
-		return 'Nevalida kvanto de venkontoj';
+	if (electionType === 'STV') {
+		places = parseInt(places, 10);
+		if (!Number.isSafeInteger(places)) {
+			return 'Nevalida kvanto de venkontoj';
+		}
 	}
 
 	const ballots = ballotsStr
@@ -40,6 +42,7 @@ Venkintoj (laŭ ordo de elektiĝo): ${results.winners.join(', ')}`;
 			throw new Error(`Nekonata voĉdonsistemo ${electionType}`);
 		}
 	} catch (e) {
+		if (!e || !('type' in e)) { throw e; }
 		switch (e.type) {
 		case 'BLANK_BALLOTS':
 			return `Rezulto: Sindetene (${e.blankBallots} balotiloj el entute ${e.numBallots} estis blankaj)`;
@@ -47,6 +50,9 @@ Venkintoj (laŭ ordo de elektiĝo): ${results.winners.join(', ')}`;
 			return 'La egalecrompa balotilo ne estis valida.';
 		case 'INVALID_BALLOT':
 			return 'Unu aŭ pluraj el la enmetitaj balotiloj ne estis valida(j).';
+		case 'TIE_BREAKER_NEEDED':
+			e.candidates = candidates;
+			throw e;
 		default:
 			throw e;
 		}

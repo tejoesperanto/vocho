@@ -232,19 +232,21 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 			resultsBox.setContent(results);
 			mainBox.screen.render();
 		} catch (e) {
+			if (!e || !('type' in e)) { throw e; }
 			if (e.type === 'TIE_BREAKER_NEEDED') {
 				prompt.setLabel('Necesas egalecrompanto!');
-				let promptText = 'La egalecrompanto mem enskribu sian balotilon ĉi-sube.\nEkz. ';
+				let promptText = 'La egalecrompanto mem enskribu sian balotilon ĉi-sube.';
 				if (currentElectionType === 'RP') {
-					promptText += 'A=B>C>D=E';
+					promptText += '\nEkz. A=B>C>D=E';
 				} else if (currentElectionType === 'STV') {
-					promptText += 'ABCDEF';
+					promptText += '\nEkz. ABCDEF';
 				}
-
+				promptText += '\nValidaj kandidatoj:\n' + e.candidates.join(', ') + '\n';
+				
 				prompt.input(promptText, '', (err, tieBreaker) => {
 					if (err) { throw err; }
 					if (!tieBreaker) { return mainBox.screen.render(); }
-					
+
 					const results = performElection(currentElectionType, candidates, ballots, ignoredCandidates, places, tieBreaker);
 					resultsBox.setContent(results);
 					mainBox.screen.render();

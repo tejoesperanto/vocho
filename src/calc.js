@@ -25,14 +25,14 @@ module.exports = function performElection (electionType, candidatesStr, ballotsS
 	global.disableDebug = true;
 	try {
 		if (electionType === 'RP') {
-			const results = lib.RankedPairs(candidates, ballots, ignoredCandidates, tieBreaker);
+			const results = lib.RankedPairs([...candidates], ballots, ignoredCandidates, tieBreaker);
 
 			const resultsStr =
 `${results.ballots} balotiloj (${results.blankBallots} blanka(j))
 Venkinto: ${results.winner}`;
 			return resultsStr;
 		} else if (electionType === 'STV') {
-			const results = lib.STV(places, candidates, ballots, tieBreaker); // TODO: Ignored candidates
+			const results = lib.STV(places, [...candidates], ballots, ignoredCandidates, tieBreaker);
 
 			const resultsStr =
 `${results.ballots} balotiloj (${results.blankBallots} blanka(j))

@@ -2,13 +2,14 @@ const util = require('./util');
 
 /**
  * Runs a Single Transferable Vote election
- * @param {number}          places       The number of electable candidates (seats)
- * @param {string[]|string} candidates   The candidates. Each candidate must be represented by one character
- * @param {string[]}        ballots      All ballots
- * @param {string}          [tieBreaker] A tie breaker listing all candidates
+ * @param {number}          places              The number of electable candidates (seats)
+ * @param {string[]|string} candidates          The candidates. Each candidate must be represented by one character
+ * @param {string[]}        ballots             All ballots
+ * @param {string[]}        [ignoredCandidates] [description]
+ * @param {string}          [tieBreaker]        A tie breaker listing all candidates
  * @returns {Object}
  */
-function STV (places, candidates, ballots, tieBreaker) {
+function STV (places, candidates, ballots, ignoredCandidates = [], tieBreaker) {
 	if (typeof candidates === 'string') { candidates = candidates.split(''); }
 	places = Math.min(places, candidates.length); // We can't elect a ghost
 
@@ -31,6 +32,9 @@ function STV (places, candidates, ballots, tieBreaker) {
 				throw err;
 			}
 		}
+		for (let cand of ignoredCandidates) {
+			tieBreaker = tieBreaker.replace(cand, '');
+		}
 	}
 
 	const originalBallots = [ ...ballots ];
@@ -46,7 +50,9 @@ function STV (places, candidates, ballots, tieBreaker) {
 	let blankBallots = 0;
 
 	// Validate the ballots
-	for (let ballot of ballots) {
+	for (let i in ballots) {
+		const ballot = ballots[i];
+
 		if (ballot.length === 0) {
 			blankBallots++;
 			continue;
@@ -66,6 +72,14 @@ function STV (places, candidates, ballots, tieBreaker) {
 			}
 			alreadyMentioned.push(pref);
 		}
+
+		for (let cand of ignoredCandidates) {
+			ballots[i] = ballot.replace(cand, '');
+		}
+	}
+
+	for (let cand of ignoredCandidates) {
+		candidates.splice(candidates.indexOf(cand), 1);
 	}
 
 	// Check blank vote count

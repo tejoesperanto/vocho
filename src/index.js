@@ -46,7 +46,7 @@ const titleBox = blessed.box({
 	left: 2,
 	height: 11,
 	content: banner + '\n\n' +
-	' '.repeat(5) + 'Versio ' + require('../package.json').version + '\n' +
+	' '.repeat(5) + 'Versio T-' + require('../package.json').version + '\n' +
 	' '.repeat(5) + '© Mia Nordentoft 2019, MIT-permesilo'
 });
 
@@ -113,6 +113,7 @@ screen.key('escape', () => {
 });
 screen.key('C-x', () => process.exit(0));
 screen.key('f12', () => {
+	screen.program.hideCursor();
 	helpScreen.toggle();
 	screen.render();
 });

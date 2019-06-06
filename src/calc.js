@@ -1,4 +1,4 @@
-const lib = require('./lib');
+const lib = require('vocho-lib');
 
 const commaSeparatedRegex = /[^\s,]/g;
 
@@ -27,10 +27,13 @@ module.exports = function performElection (electionType, candidatesStr, ballotsS
 		if (electionType === 'RP') {
 			const results = lib.RankedPairs([...candidates], ballots, ignoredCandidates, tieBreaker);
 
-			const resultsStr =
-`${results.ballots} balotiloj (${results.blankBallots} blanka(j))
-Venkinto: ${results.winner}`;
+			let resultsStr = `${results.ballots} balotiloj (${results.blankBallots} blanka(j))\n`;
+			if (results.disqualifiedCandidates.length) {
+				resultsStr += `Neelektitaj laŭ §2.6: ${results.disqualifiedCandidates.join(', ')}\n`;
+			}
+			resultsStr += `Venkinto: ${results.winner}`;
 			return resultsStr;
+
 		} else if (electionType === 'STV') {
 			const results = lib.STV(places, [...candidates], ballots, ignoredCandidates, tieBreaker);
 

@@ -140,6 +140,7 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 		width: '50%',
 		border: 'line',
 		scrollable: true,
+		mouse: true,
 		content: defaultResultsValue
 	});
 
@@ -237,9 +238,9 @@ module.exports = function setUpMainBox (mainBox, prompt) {
 				prompt.setLabel('Necesas egalecrompanto!');
 				let promptText = 'La egalecrompanto mem enskribu sian balotilon ĉi-sube.';
 				if (currentElectionType === 'RP') {
-					promptText += '\nEkz. A=B>C>D=E';
+					promptText += '\nEkz. A>B>D>C';
 				} else if (currentElectionType === 'STV') {
-					promptText += '\nEkz. ABCDEF';
+					promptText += '\nEkz. ABCD';
 				}
 				promptText += '\nValidaj kandidatoj:\n' + e.candidates.join(', ') + '\n';
 				

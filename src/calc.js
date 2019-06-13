@@ -80,17 +80,37 @@ module.exports = function performElection (electionType, candidatesStr, ballotsS
 		} else if (electionType === 'STV') {
 			resultsText += `\nElektiĝkvoto: ${results.quota.toFixed(3)}`;
 
+			const votesTableData = [['Voĉdoneblo']];
 			for (let i = 0; i < results.rounds.length; i++) {
-				const round = results.rounds[i];
+				votesTableData[0].push(`${i + 1}-a vico`);
+			}
 
-				resultsText += `\n\n${style.bold.open}Vico ${i + 1}${style.bold.close}`;
+			for (let cand of candidates) {
+				const row = [ cand ];
+				votesTableData.push(row);
 
-				if (round.elected.length) {
-					resultsText += `\nElektitaj: ${round.elected.join(', ')}`;
-				} else if (round.eliminated) {
-					resultsText += '\nMalelektita: ' + round.eliminated;
+				for (let round of results.rounds) {
+					if (!(cand in round.votes)) {
+						row.push('');
+						continue;
+					}
+					const votes = round.votes[cand];
+					const votesRounded = votes.toFixed(3);
+
+					let col;
+					if (round.elected.includes(cand)) {
+						col = `${style.bold.open}${style.green.open}${votesRounded}${style.green.close}${style.bold.close}`;
+					} else if (cand === round.eliminated) {
+						col = `${style.bold.open}${style.red.open}${votesRounded}${style.red.close}${style.bold.close}`;
+					} else {
+						col = votesRounded;
+					}
+
+					row.push(col);
 				}
 			}
+
+			resultsText += '\n\n' + table(votesTableData);
 
 			resultsText += '\n\nVenkintoj (laŭ ordo de elektiĝo):\n' + results.winners.join(', ');
 		}

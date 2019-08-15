@@ -42,7 +42,8 @@ module.exports = function performElection (electionType, candidatesStr, ballotsS
 
 		if (electionType === 'RP') {
 			if (results.disqualifiedCandidates.length) {
-				resultsText += `\n\nNeelektitaj laŭ §2.6: ${results.disqualifiedCandidates.join(', ')}\n`;
+				const disc_cands = results.disqualifiedCandidates.map(c => `${c} (${results.candStats[c].mentions} mencioj)`);
+				resultsText += `\n\nNeelektitaj laŭ §2.6: ${disc_cands.join(', ')}\n`;
 			}
 
 			const comparedPairsTableData = [[]];
